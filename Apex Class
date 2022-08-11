@@ -1,0 +1,32 @@
+public class GeneratepdfController {
+	@auraEnabled
+    public static void savePDFOpportunity(Id quoteId){
+        PageReference pdfPage = new PageReference('/apex/QuotePDF');
+	    	pdfPage.getParameters().put('Id', quoteId);
+        Blob pdfContent = pdfPage.getContent();
+        Attachment attach1= new Attachment();
+        attach1.ParentId = quoteId;
+        attach1.Name = 'Attachment';
+        attach1.Body = pdfContent;
+        attach1.contentType = 'application/pdf';
+		    insert attach1;
+          Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+          email.setUseSignature(false);
+          email.setSaveAsActivity(true);
+          email.setSubject('Quotation');
+          String emailId = [select id, Email from Quote where id=: quoteId].Email;
+          system.debug(emailId);
+          String[] toAddresses = new String[] {emailId};
+          email.setToAddresses(toAddresses);
+          email.setHtmlBody('<html><body>Quote Details <br/>See the Attachment for more</body></html>');
+          Blob tempBlob = attach1.Body;
+          Messaging.EmailFileAttachment efa = new Messaging.EmailFileAttachment();
+          efa.setBody(tempBlob);
+          efa.setFileName('attachment.pdf');
+          email.setFileAttachments(new Messaging.EmailFileAttachment[] {efa});
+          Messaging.SingleEmailMessage[] emailList = new Messaging.SingleEmailMessage[] {email};
+          Messaging.sendEmail(emailList);
+          
+    
+    }
+}
