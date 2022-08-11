@@ -1,4 +1,4 @@
-<aura:component controller="TestAppController" implements="force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId" >
+<aura:component controller="GeneratepdfController" implements="force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,force:hasRecordId" >
     <aura:html tag="style">
         .cuf-content {
             padding: 4 0rem !important;
