@@ -1,15 +1,15 @@
 public class GeneratepdfController {
-	@auraEnabled
+    @auraEnabled
     public static void savePDFOpportunity(Id quoteId){
         PageReference pdfPage = new PageReference('/apex/QuotePDF');
-	    	pdfPage.getParameters().put('Id', quoteId);
+	pdfPage.getParameters().put('Id', quoteId);
         Blob pdfContent = pdfPage.getContent();
         Attachment attach1= new Attachment();
         attach1.ParentId = quoteId;
         attach1.Name = 'Attachment';
         attach1.Body = pdfContent;
         attach1.contentType = 'application/pdf';
-		    insert attach1;
+        insert attach1;
           Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
           email.setUseSignature(false);
           email.setSaveAsActivity(true);
